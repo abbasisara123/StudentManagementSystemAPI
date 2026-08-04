@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using StudentManagement.API.DTOs.Department;
+using StudentManagement.API.DTOs.Student;
 using StudentManagement.API.Entities;
 
 namespace StudentManagement.API.Mappings
@@ -8,11 +9,12 @@ namespace StudentManagement.API.Mappings
     {
         public DepartmentProfile()
         {
+            //Get
+            CreateMap<Department, DepartmentDto>();
+
             //POST
             CreateMap<CreateDepartmentDto, Department>();
 
-            //Get
-            CreateMap<Department, DepartmentDto>().ReverseMap();
             //PUT
             CreateMap<UpdateDepartmentDto, Department>();
 
