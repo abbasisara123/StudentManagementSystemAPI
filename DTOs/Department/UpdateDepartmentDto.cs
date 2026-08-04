@@ -5,7 +5,7 @@ namespace StudentManagement.API.DTOs.Department
     public class UpdateDepartmentDto
     {
         [Required]
-        [MaxLength]
+        [MaxLength(100)]
         public string DepartmentName { get; set; } = string.Empty;
     }
 }

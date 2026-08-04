@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore; 
 using StudentManagement.API.Data;
 using StudentManagement.API.Interfaces;
 using StudentManagement.API.Repositories;
@@ -11,20 +11,8 @@ var services = builder.Services;
 services.AddControllers();
 services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 services.AddScoped<IDepartmentRepository,DepartmentRepository>();
+services.AddScoped<IStudentRepository, StudentRepository>();
 services.AddAutoMapper(typeof(Program));
-
-
-
-
-
-
-
-
-services.AddSwaggerGen();
-
-
-
-
 
 var app = builder.Build();
 
