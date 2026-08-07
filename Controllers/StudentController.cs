@@ -13,10 +13,12 @@ namespace StudentManagement.API.Controllers
     {
         private readonly IStudentRepository _studentRepository;
         private readonly IMapper _mapper;
-        public StudentController(IStudentRepository studentRepository, IMapper mapper) 
+        private readonly IDepartmentRepository _departmentRepository;
+        public StudentController(IStudentRepository studentRepository, IMapper mapper, IDepartmentRepository departmentRepository) 
         { 
             _studentRepository = studentRepository;
             _mapper = mapper;
+            _departmentRepository = departmentRepository;
         }
 
         [HttpGet]
@@ -42,10 +44,21 @@ namespace StudentManagement.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddStudent(CreateStudentDto newStudent)
         {
+            var department = await _departmentRepository.GetByIdAsync(newStudent.DepartmentId);
+            if (department == null)
+            {
+                return BadRequest("Department does not exits.");
+            }
+
             var student = _mapper.Map<Student>(newStudent);
             var record= await _studentRepository.AddAsync(student);
+            
             var response = _mapper.Map<StudentDto>(record);
-            return Ok(response);
+            return CreatedAtAction(
+                nameof(GetStudentById),  // newly created resource ko retrieve krny kylye ia action ka url use karo
+                new { id = response.Id },   //Ab ASP.NET Core isko use karke URL banata hai.
+                response //client ko yh data bhejdu    (body hai)
+                );
         }
 
         [HttpPut("{id}")]
@@ -64,8 +77,12 @@ namespace StudentManagement.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
-            await _studentRepository.DeleteAsync(id);
-            return NoContent();
+            var result=await _studentRepository.DeleteAsync(id);
+            if (!result)
+            {
+                return NotFound();     //404
+            }
+            return NoContent();   //204
         }
 
     }

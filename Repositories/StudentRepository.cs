@@ -2,6 +2,7 @@
 using StudentManagement.API.Data;
 using StudentManagement.API.Entities;
 using StudentManagement.API.Interfaces;
+using System.Linq;
 
 namespace StudentManagement.API.Repositories
 {
@@ -21,7 +22,7 @@ namespace StudentManagement.API.Repositories
 
         public async Task<Student?> GetByIdAsync(int id)
         {
-            return await _context.Students.FindAsync(id);
+            return await _context.Students.Include(s=>s.Department).FirstOrDefaultAsync(s=>s.Id==id);
         }
 
         public async Task<Student> AddAsync(Student student)
@@ -37,14 +38,16 @@ namespace StudentManagement.API.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var student = await _context.Students.FindAsync(id);
-            if (student != null)
+            if (student == null)
             {
-                _context.Students.Remove(student);
-                await _context.SaveChangesAsync();
+                return false;
             }
+            _context.Students.Remove(student);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
