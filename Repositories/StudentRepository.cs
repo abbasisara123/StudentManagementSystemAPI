@@ -16,7 +16,7 @@ namespace StudentManagement.API.Repositories
 
         public async Task<List<Student>> GetAllAsync()
         {
-             return await _context.Students.ToListAsync();
+            return await _context.Students.Include(s => s.Department).ToListAsync();
         }
 
         public async Task<Student?> GetByIdAsync(int id)

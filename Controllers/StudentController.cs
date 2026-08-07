@@ -23,7 +23,7 @@ namespace StudentManagement.API.Controllers
         public async Task<IActionResult> GetAllStudents()
         {
             var student = await _studentRepository.GetAllAsync();
-            var response = _mapper.Map<StudentDto>(student);
+            var response = _mapper.Map<List<StudentDto>>(student);
             return Ok(response);
         }
 
