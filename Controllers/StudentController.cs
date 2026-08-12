@@ -55,7 +55,7 @@ namespace StudentManagement.API.Controllers
             
             var response = _mapper.Map<StudentDto>(record);
             return CreatedAtAction(
-                nameof(GetStudentById),  // newly created resource ko retrieve krny kylye ia action ka url use karo
+                nameof(GetStudentById),  // newly created resource ko retrieve krny kylye is action ka url use karo
                 new { id = response.Id },   //Ab ASP.NET Core isko use karke URL banata hai.
                 response //client ko yh data bhejdu    (body hai)
                 );
