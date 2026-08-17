@@ -65,7 +65,7 @@ namespace StudentManagement.API.Controllers
         public async Task<IActionResult> UpdateStudent(int id,UpdateStudentDto updateStudent)
         {
             var student=await _studentRepository.GetByIdAsync(id);
-            if (student == null)
+            if (student == null)   
             {
                 return NotFound();
             }
