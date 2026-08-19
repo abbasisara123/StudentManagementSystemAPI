@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StudentManagement.API.DTOs.Common;
 using StudentManagement.API.DTOs.Student;
 using StudentManagement.API.Entities;
 using StudentManagement.API.Interfaces;
@@ -23,11 +24,23 @@ namespace StudentManagement.API.Controllers
             _departmentRepository = departmentRepository;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllStudents()
+        [HttpGet]                                         /// default value for pageNumber and pageSize
+        public async Task<IActionResult> GetAllStudents(int pageNumber=1, int pageSize=10)
         {
-            var student = await _studentRepository.GetAllAsync();
-            var response = _mapper.Map<List<StudentDto>>(student);
+            var result = await _studentRepository.GetAllAsync(pageNumber, pageSize);
+            
+            var students = _mapper.Map<List<StudentDto>>(result.Students);
+
+            var response = new PagedResponseDto<StudentDto>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = result.TotalCount,
+                TotalPages = (int)Math.Ceiling(
+                    (double)result.TotalCount / pageSize),
+                Data = students
+            };
+
             return Ok(response);
         }
 
@@ -89,3 +102,4 @@ namespace StudentManagement.API.Controllers
 
     }
 }
+

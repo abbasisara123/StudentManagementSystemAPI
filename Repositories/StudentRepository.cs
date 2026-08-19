@@ -15,9 +15,26 @@ namespace StudentManagement.API.Repositories
             _context = context;
         }
 
-        public async Task<List<Student>> GetAllAsync()
+        public async Task <(List<Student> Students, int TotalCount)> GetAllAsync(int pageNumber, int pageSize)
         {
-            return await _context.Students.Include(s => s.Department).ToListAsync();
+            //return await _context.Students
+            //    .Include(s => s.Department)
+            //    .Skip((pageNumber-1)*pageSize)
+            //    .Take(pageSize)
+            //    .ToListAsync();
+
+
+            var query = _context.Students
+                .Include(s => s.Department);
+
+            var totalCount = await query.CountAsync();
+
+            var students = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (students, totalCount);
         }
 
         public async Task<Student?> GetByIdAsync(int id)
