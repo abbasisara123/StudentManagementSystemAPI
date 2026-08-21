@@ -25,9 +25,11 @@ namespace StudentManagement.API.Controllers
         }
 
         [HttpGet]                                         /// default value for pageNumber and pageSize
-        public async Task<IActionResult> GetAllStudents(int pageNumber=1, int pageSize=10)
+        public async Task<IActionResult> GetAllStudents(int pageNumber=1,
+            int pageSize=10,
+            string? search = null)
         {
-            var result = await _studentRepository.GetAllAsync(pageNumber, pageSize);
+            var result = await _studentRepository.GetAllAsync(pageNumber, pageSize, search);
             
             var students = _mapper.Map<List<StudentDto>>(result.Students);
 

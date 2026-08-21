@@ -15,7 +15,7 @@ namespace StudentManagement.API.Repositories
             _context = context;
         }
 
-        public async Task <(List<Student> Students, int TotalCount)> GetAllAsync(int pageNumber, int pageSize)
+        public async Task <(List<Student> Students, int TotalCount)> GetAllAsync(int pageNumber, int pageSize, string? search)
         {
             //return await _context.Students
             //    .Include(s => s.Department)
@@ -24,8 +24,14 @@ namespace StudentManagement.API.Repositories
             //    .ToListAsync();
 
 
-            var query = _context.Students
-                .Include(s => s.Department);
+            IQueryable<Student> query = _context.Students
+                .Include(s => s.Department);     ///eager loading
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                 query = query.Where(s =>
+                    s.studentName.Contains(search) ||
+                    s.Email.Contains(search));
+            }
 
             var totalCount = await query.CountAsync();
 
