@@ -15,7 +15,11 @@ namespace StudentManagement.API.Repositories
             _context = context;
         }
 
-        public async Task <(List<Student> Students, int TotalCount)> GetAllAsync(int pageNumber, int pageSize, string? search)
+        public async Task <(List<Student> Students, int TotalCount)> GetAllAsync(int pageNumber, 
+            int pageSize, 
+            string? search,
+            string? sortBy,
+            string? sortOrder)
         {
             //return await _context.Students
             //    .Include(s => s.Department)
@@ -32,6 +36,34 @@ namespace StudentManagement.API.Repositories
                     s.studentName.Contains(search) ||
                     s.Email.Contains(search));
             }
+
+
+            if (!string.IsNullOrWhiteSpace(sortBy))
+            {
+                if (sortBy.ToLower()=="studentname")
+                {
+
+                    // turnary operators
+                    query = sortOrder?.ToLower() == "desc"
+                        ? query.OrderByDescending(s => s.studentName)
+                        : query.OrderBy(s => s.studentName);
+                }
+
+                else if (sortBy.ToLower() == "age")
+                {
+                    query = sortOrder?.ToLower() == "desc"
+                        ? query.OrderByDescending(s => s.Age)
+                        : query.OrderBy(s => s.Age);
+                }
+
+                else if (sortBy.ToLower() == "email")
+                {
+                    query = sortOrder?.ToLower() == "des"
+                        ? query.OrderByDescending(s => s.Email)
+                        : query.OrderBy(s => s.Email);
+                }
+            }
+
 
             var totalCount = await query.CountAsync();
 
