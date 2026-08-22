@@ -29,9 +29,10 @@ namespace StudentManagement.API.Controllers
             int pageSize=10,
             string? search = null,
             string? sortBy = null,
-            string? sortOrder = null)
+            string? sortOrder = null,
+            int? departmentId = null)
         {
-            var result = await _studentRepository.GetAllAsync(pageNumber, pageSize, search, sortBy, sortOrder);
+            var result = await _studentRepository.GetAllAsync(pageNumber, pageSize, search, sortBy, sortOrder, departmentId);
             
             var students = _mapper.Map<List<StudentDto>>(result.Students);
 
@@ -47,6 +48,7 @@ namespace StudentManagement.API.Controllers
 
             return Ok(response);
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetStudentById(int id)
