@@ -19,7 +19,8 @@ namespace StudentManagement.API.Repositories
             int pageSize, 
             string? search,
             string? sortBy,
-            string? sortOrder)
+            string? sortOrder,
+            int? departmentId)
         {
             //return await _context.Students
             //    .Include(s => s.Department)
@@ -27,7 +28,7 @@ namespace StudentManagement.API.Repositories
             //    .Take(pageSize)
             //    .ToListAsync();
 
-
+            // SEARCHING
             IQueryable<Student> query = _context.Students
                 .Include(s => s.Department);     ///eager loading
             if (!string.IsNullOrWhiteSpace(search))
@@ -38,6 +39,15 @@ namespace StudentManagement.API.Repositories
             }
 
 
+            // FILTERING
+            if (departmentId.HasValue)
+            {
+                query = query.Where(s => s.DepartmentId == departmentId.Value);
+            }
+
+
+
+            // SORTING
             if (!string.IsNullOrWhiteSpace(sortBy))
             {
                 if (sortBy.ToLower()=="studentname")
@@ -46,7 +56,7 @@ namespace StudentManagement.API.Repositories
                     // turnary operators
                     query = sortOrder?.ToLower() == "desc"
                         ? query.OrderByDescending(s => s.studentName)
-                        : query.OrderBy(s => s.studentName);
+                        : query.OrderBy(s => s.studentName);    // ascending order
                 }
 
                 else if (sortBy.ToLower() == "age")
@@ -64,9 +74,11 @@ namespace StudentManagement.API.Repositories
                 }
             }
 
-
+            // TOTAL COUNT 
             var totalCount = await query.CountAsync();
 
+
+            // PAGINATION
             var students = await query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
