@@ -7,6 +7,7 @@ using StudentManagement.API.Data;
 using StudentManagement.API.Entities;
 using StudentManagement.API.Interfaces;
 using StudentManagement.API.Mappings;
+using StudentManagement.API.Middleware;
 using StudentManagement.API.Repositories;
 using StudentManagement.API.Services;
 using System.Text;
@@ -25,6 +26,8 @@ services.AddScoped<IUserRepository, UserRepository>();
 services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 services.AddScoped<IPasswordService, PasswordService>();
 services.AddScoped<IJwtService, JwtService>();
+services.AddExceptionHandler<GlobalExceptionHandler>();   // ASP.NET Core ke DI container ko bata rahe hain ke jab exception handle karni ho, GlobalExceptionHandler use karna.
+
 services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<UserProfile>();
@@ -74,6 +77,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+//app.UseMiddleware<ExceptionHandlingMiddleware>();   // custom middleware
+
+app.UseExceptionHandler(_ => { });                           // built-in middleware
 
 app.UseAuthentication();
 

@@ -32,6 +32,11 @@ namespace StudentManagement.API.Controllers
             string? sortOrder = null,
             int? departmentId = null)
         {
+
+            //// temporary exception raise krwana
+            throw new Exception("Test exception");
+
+
             var result = await _studentRepository.GetAllAsync(pageNumber, pageSize, search, sortBy, sortOrder, departmentId);
             
             var students = _mapper.Map<List<StudentDto>>(result.Students);
